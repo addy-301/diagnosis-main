@@ -1,0 +1,86 @@
+{
+    "Actinic keratoses and intraepithelial carcinomae": {
+        "home_remedies": [
+            "Apply aloe vera gel twice daily.",
+            "Use green tea extract for soothing effects.",
+            "Avoid excessive sun exposure and use sunscreen."
+        ],
+        "prescription_treatments": [
+            "5-Fluorouracil cream (consult a doctor).",
+            "Imiquimod cream for topical treatment.",
+            "Cryotherapy (liquid nitrogen freezing)."
+        ]
+    },
+    "Basal cell carcinoma": {
+        "home_remedies": [
+            "Apply coconut oil for skin hydration.",
+            "Use turmeric paste to reduce inflammation.",
+            "Protect the skin with a zinc-based sunscreen."
+        ],
+        "prescription_treatments": [
+            "Topical imiquimod or fluorouracil.",
+            "Mohs surgery (for advanced cases).",
+            "Radiation therapy if needed."
+        ]
+    },
+    "Benign keratosis-like lesions": {
+        "home_remedies": [
+            "Keep skin moisturized with vitamin E cream.",
+            "Avoid harsh chemicals and excessive scrubbing.",
+            "Use apple cider vinegar to reduce roughness."
+        ],
+        "prescription_treatments": [
+            "Salicylic acid treatment for mild cases.",
+            "Cryotherapy for targeted removal.",
+            "Laser therapy if lesions persist."
+        ]
+    },
+    "Dermatofibroma": {
+        "home_remedies": [
+            "Apply tea tree oil to the affected area.",
+            "Use coconut oil to keep skin hydrated.",
+            "Avoid excessive scratching or irritation."
+        ],
+        "prescription_treatments": [
+            "Steroid injections for reducing inflammation.",
+            "Surgical excision if necessary.",
+            "Laser therapy for cosmetic improvement."
+        ]
+    },
+    "Melanoma": {
+        "home_remedies": [
+            "Apply vitamin C serum for skin protection.",
+            "Consume antioxidant-rich foods (berries, nuts).",
+            "Avoid UV exposure and wear protective clothing."
+        ],
+        "prescription_treatments": [
+            "Targeted therapy drugs (BRAF inhibitors).",
+            "Immunotherapy for advanced stages.",
+            "Surgical excision for removal."
+        ]
+    },
+    "Melanocytic nevi": {
+        "home_remedies": [
+            "Apply castor oil to keep the skin soft.",
+            "Avoid excessive touching or irritation.",
+            "Monitor for any changes in size or color."
+        ],
+        "prescription_treatments": [
+            "Surgical removal if necessary.",
+            "Laser therapy for cosmetic concerns.",
+            "Regular dermatological checkups."
+        ]
+    },
+    "Pyogenic granulomas and hemorrhage": {
+        "home_remedies": [
+            "Apply honey for its antibacterial properties.",
+            "Keep the area clean and dry.",
+            "Avoid picking or scratching the lesion."
+        ],
+        "prescription_treatments": [
+            "Silver nitrate application for bleeding control.",
+            "Surgical removal for large lesions.",
+            "Topical antibiotics if infected."
+        ]
+    }
+}
