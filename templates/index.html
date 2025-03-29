@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <title>Skin Disease Diagonstic System</title>
 <style>
   body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
@@ -138,88 +137,5 @@
 <footer class="w3-container w3-center" style="padding:20px; background-color: #f8f9fa; margin-top: 50px;">
   <p>© 2024 Skin Disease Diagnostic System. All rights reserved.</p>
 </footer>
-<script>
-  async function downloadPrescription() {
-      const disease = "{{ disease }}";  // Get detected disease from Flask template
-      if (!disease) {
-          alert("No disease detected! Please run an analysis first.");
-          return;
-      }
-
-      try {
-          // Fetch treatment data from JSON
-          const response = await fetch('/static/data/treatments.json');
-          const data = await response.json();
-
-          if (!data[disease]) {
-              alert("No prescription available for this disease.");
-              return;
-          }
-
-          // Extract details
-          const patientName = "{{ user.name }}";  // Ensure user is logged in and has a name
-          const date = new Date().toLocaleDateString();
-          const homeRemedies = data[disease].home_remedies;
-          const prescriptionMeds = data[disease].prescription_treatments;
-
-          // Initialize jsPDF
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
-
-          // Title
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(16);
-          doc.text("Doctor's Prescription", 70, 20);
-          doc.setFontSize(12);
-          doc.setFont("helvetica", "normal");
-
-          // Patient Details
-          doc.text(`Date: ${date}`, 10, 30);
-          doc.text(`Patient Name: ${patientName}`, 10, 40);
-          doc.text(`Diagnosed Disease: ${disease}`, 10, 50);
-
-          // Home Remedies
-          doc.setFont("helvetica", "bold");
-          doc.text("Home Remedies:", 10, 60);
-          doc.setFont("helvetica", "normal");
-
-          let y = 70;
-          homeRemedies.forEach((remedy, index) => {
-              doc.text(`${index + 1}. ${remedy}`, 15, y);
-              y += 10;
-          });
-
-          // Prescription Medications
-          doc.setFont("helvetica", "bold");
-          doc.text("Prescription Medications:", 10, y);
-          doc.setFont("helvetica", "normal");
-
-          y += 10;
-          prescriptionMeds.forEach((med, index) => {
-              doc.text(`${index + 1}. ${med}`, 15, y);
-              y += 10;
-          });
-
-          // Doctor References
-          doc.setFont("helvetica", "bold");
-          doc.text("Contact Dermatologists:", 10, y);
-          doc.setFont("helvetica", "normal");
-
-          y += 10;
-          doc.text("1. American Academy of Dermatology: www.aad.org", 15, y);
-          y += 10;
-          doc.text("2. Mayo Clinic: www.mayoclinic.org", 15, y);
-          y += 10;
-          doc.text("3. DermNet NZ: www.dermnetnz.org", 15, y);
-
-          // Save as PDF
-          doc.save(`Prescription_${disease.replace(/\s+/g, '_')}.pdf`);
-      } catch (error) {
-          console.error("Error fetching treatments:", error);
-          alert("Failed to generate prescription.");
-      }
-  }
-</script>
-
 </body>
 </html>

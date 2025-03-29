@@ -209,6 +209,9 @@
           </li>
           {% endfor %}
       </ul>
+      <button id="down_btn" class="btn btn-primary" style="background-color: #df6a0b; border: none;">
+        📄 Download Prescription
+    </button>
       {% else %}
       <div class="text-center">
           <h2>No disease analysis found</h2>
@@ -217,9 +220,6 @@
               Go to Disease Analysis
           </a>
       </div>
-      <button onclick="downloadPrescription()" class="btn btn-primary" style="background-color: #df6a0b; border: none;">
-        📄 Download Prescription
-    </button>
       {% endif %}
   </div>
 
@@ -270,10 +270,105 @@
 
   <footer class="w3-container w3-center" style="padding:20px; background-color: #f8f9fa; margin-top: 50px;">
     <p>© 2024 Skin Disease Diagnostic System. All rights reserved.</p>
+    
 </footer>
 
 
-<script>
+<script type="module">
+    
+const res={
+    "Actinic keratoses and intraepithelial carcinomae": {
+        "home_remedies": [
+            "Apply aloe vera gel twice daily.",
+            "Use green tea extract for soothing effects.",
+            "Avoid excessive sun exposure and use sunscreen."
+        ],
+        "prescription_treatments": [
+            "5-Fluorouracil cream (consult a doctor).",
+            "Imiquimod cream for topical treatment.",
+            "Cryotherapy (liquid nitrogen freezing)."
+        ]
+    },
+    "Basal cell carcinoma": {
+        "home_remedies": [
+            "Apply coconut oil for skin hydration.",
+            "Use turmeric paste to reduce inflammation.",
+            "Protect the skin with a zinc-based sunscreen."
+        ],
+        "prescription_treatments": [
+            "Topical imiquimod or fluorouracil.",
+            "Mohs surgery (for advanced cases).",
+            "Radiation therapy if needed."
+        ]
+    },
+    "Benign keratosis-like lesions": {
+        "home_remedies": [
+            "Keep skin moisturized with vitamin E cream.",
+            "Avoid harsh chemicals and excessive scrubbing.",
+            "Use apple cider vinegar to reduce roughness."
+        ],
+        "prescription_treatments": [
+            "Salicylic acid treatment for mild cases.",
+            "Cryotherapy for targeted removal.",
+            "Laser therapy if lesions persist."
+        ]
+    },
+    "Dermatofibroma": {
+        "home_remedies": [
+            "Apply tea tree oil to the affected area.",
+            "Use coconut oil to keep skin hydrated.",
+            "Avoid excessive scratching or irritation."
+        ],
+        "prescription_treatments": [
+            "Steroid injections for reducing inflammation.",
+            "Surgical excision if necessary.",
+            "Laser therapy for cosmetic improvement."
+        ]
+    },
+    "Melanoma": {
+        "home_remedies": [
+            "Apply vitamin C serum for skin protection.",
+            "Consume antioxidant-rich foods (berries, nuts).",
+            "Avoid UV exposure and wear protective clothing."
+        ],
+        "prescription_treatments": [
+            "Targeted therapy drugs (BRAF inhibitors).",
+            "Immunotherapy for advanced stages.",
+            "Surgical excision for removal."
+        ]
+    },
+    "Melanocytic nevi": {
+        "home_remedies": [
+            "Apply castor oil to keep the skin soft.",
+            "Avoid excessive touching or irritation.",
+            "Monitor for any changes in size or color."
+        ],
+        "prescription_treatments": [
+            "Surgical removal if necessary.",
+            "Laser therapy for cosmetic concerns.",
+            "Regular dermatological checkups."
+        ]
+    },
+    "Pyogenic granulomas and hemorrhage": {
+        "home_remedies": [
+            "Apply honey for its antibacterial properties.",
+            "Keep the area clean and dry.",
+            "Avoid picking or scratching the lesion."
+        ],
+        "prescription_treatments": [
+            "Silver nitrate application for bleeding control.",
+            "Surgical removal for large lesions.",
+            "Topical antibiotics if infected."
+        ]
+    }
+}
+
+
+
+    console.log(res)
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM fully loaded and parsed");
+
   function sendMessage() {
       const userInput = document.getElementById('user-message');
       const message = userInput.value;
@@ -315,88 +410,97 @@
           sendMessage();
       }
   });
-  </script>
-  <script>
-    async function downloadPrescription() {
-        const disease = "{{ disease }}";  // Get detected disease from Flask template
-        if (!disease) {
-            alert("No disease detected! Please run an analysis first.");
-            return;
-        }
 
-        try {
-            // Fetch treatment data from JSON
-            const response = await fetch('./treatments.json');
-            const data = await response.json();
+document.getElementById('down_btn').addEventListener('click', function(){
+        console.log("PEHLI LINE");  // Debugging log
 
-            if (!data[disease]) {
-                alert("No prescription available for this disease.");
-                return;
-            }
+        const disease = "{{ disease|default('') }}";  // Ensure it doesn't break JavaScript
+        const patientName = "{{ user.name if user else 'Unknown' }}";  // Handle undefined user
 
-            // Extract details
-            const patientName = "{{ user.name }}";  // Ensure user is logged in and has a name
-            const date = new Date().toLocaleDateString();
-            const homeRemedies = data[disease].home_remedies;
-            const prescriptionMeds = data[disease].prescription_treatments;
+        const downBtn = document.getElementById('down_btn');
+        if (downBtn) {
+            downBtn.addEventListener('click', function() {
 
-            // Initialize jsPDF
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+                if (!disease) {
+                    alert("No disease detected! Please run an analysis first.");
+                    return;
+                }
 
-            // Title
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(16);
-            doc.text("Doctor's Prescription", 70, 20);
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "normal");
+                try {
+                    // Fetch treatment data
+                    const data = JSON.parse(JSON.stringify(res));
 
-            // Patient Details
-            doc.text(`Date: ${date}`, 10, 30);
-            doc.text(`Patient Name: ${patientName}`, 10, 40);
-            doc.text(`Diagnosed Disease: ${disease}`, 10, 50);
+                    if (!data[disease]) {
+                        alert("No prescription available for this disease.");
+                        return;
+                    }
 
-            // Home Remedies
-            doc.setFont("helvetica", "bold");
-            doc.text("Home Remedies:", 10, 60);
-            doc.setFont("helvetica", "normal");
 
-            let y = 70;
-            homeRemedies.forEach((remedy, index) => {
-                doc.text(`${index + 1}. ${remedy}`, 15, y);
-                y += 10;
+                    // const patientName = "{{ user.name }}";
+                    const date = new Date().toLocaleDateString();
+                    const homeRemedies = data[disease].home_remedies;
+                    const prescriptionMeds = data[disease].prescription_treatments;
+
+                    // Initialize jsPDF
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    // Title
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(16);
+                    doc.text("Doctor's Prescription", 70, 20);
+                    doc.setFontSize(12);
+                    doc.setFont("helvetica", "normal");
+
+                    // Patient Details
+                    doc.text(`Date: ${date}`, 10, 30);
+                    doc.text(`Patient Name: ${patientName}`, 10, 40);
+                    doc.text(`Diagnosed Disease: ${disease}`, 10, 50);
+
+                    // Home Remedies
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Home Remedies:", 10, 60);
+                    doc.setFont("helvetica", "normal");
+
+                    let y = 70;
+                    homeRemedies.forEach((remedy, index) => {
+                        doc.text(`${index + 1}. ${remedy}`, 15, y);
+                        y += 10;
+                    });
+
+                    // Prescription Medications
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Prescription Medications:", 10, y);
+                    doc.setFont("helvetica", "normal");
+
+                    y += 10;
+                    prescriptionMeds.forEach((med, index) => {
+                        doc.text(`${index + 1}. ${med}`, 15, y);
+                        y += 10;
+                    });
+
+                    // Doctor References
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Contact Dermatologists:", 10, y);
+                    doc.setFont("helvetica", "normal");
+
+                    y += 10;
+                    doc.text("1. American Academy of Dermatology: www.aad.org", 15, y);
+                    y += 10;
+                    doc.text("2. Mayo Clinic: www.mayoclinic.org", 15, y);
+                    y += 10;
+                    doc.text("3. DermNet NZ: www.dermnetnz.org", 15, y);
+
+                    // Save as PDF
+                    doc.save(`Prescription_${disease.replace(/\s+/g, '_')}.pdf`);
+                } catch (error) {
+                    console.error("Error fetching treatments:", error);
+                    alert("Failed to generate prescription.");
+                }
             });
-
-            // Prescription Medications
-            doc.setFont("helvetica", "bold");
-            doc.text("Prescription Medications:", 10, y);
-            doc.setFont("helvetica", "normal");
-
-            y += 10;
-            prescriptionMeds.forEach((med, index) => {
-                doc.text(`${index + 1}. ${med}`, 15, y);
-                y += 10;
-            });
-
-            // Doctor References
-            doc.setFont("helvetica", "bold");
-            doc.text("Contact Dermatologists:", 10, y);
-            doc.setFont("helvetica", "normal");
-
-            y += 10;
-            doc.text("1. American Academy of Dermatology: www.aad.org", 15, y);
-            y += 10;
-            doc.text("2. Mayo Clinic: www.mayoclinic.org", 15, y);
-            y += 10;
-            doc.text("3. DermNet NZ: www.dermnetnz.org", 15, y);
-
-            // Save as PDF
-            doc.save(`Prescription_${disease.replace(/\s+/g, '_')}.pdf`);
-        } catch (error) {
-            console.error("Error fetching treatments:", error);
-            alert("Failed to generate prescription.");
         }
-    }
+    });
+});
 </script>
 
 </body>
